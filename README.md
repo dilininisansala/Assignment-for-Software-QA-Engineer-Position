@@ -28,6 +28,7 @@ npm run cypress:open
 
 Runs all Cypress tests in headless mode and generate Allure report
 npm run ui-regression-allure
+<img width="1888" height="862" alt="image" src="https://github.com/user-attachments/assets/54627cd6-df28-4705-ab89-4f4adad2743c" />
 
 
 ## CI/CD
