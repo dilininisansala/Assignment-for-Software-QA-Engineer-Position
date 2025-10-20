@@ -1,49 +1,44 @@
-# Cypress test pipeline - runs only on main branch
-
-name: Cypress Tests
+name: Cypress UI Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'  # Added caching for faster installs
+          node-version: 18
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install Dependencies
+        run: |
+          cd "UI Automation"
+          npm ci
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          browser: chrome
-          headed: false
-          record: false  # Explicitly set recording
-          parallel: false  # Explicitly set parallelization
-        env:
-          CYPRESS_baseUrl: https://automationexercise.com/
+      - name: Run Cypress Tests
+        run: |
+          cd "UI Automation"
+          npx cypress run
 
-      - name: Upload videos & screenshots on failure
-        if: failure()
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          cd "UI Automation"
+          npm run allure:report
+
+      - name: Upload Allure Report as Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-artifacts
-          path: |
-            cypress/videos/**/*.mp4
-            cypress/screenshots/**/*.png
-          retention-days: 7  
+          name: allure-report
+          path: "UI Automation/allure-report"
