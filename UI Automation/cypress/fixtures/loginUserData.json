@@ -1,0 +1,8 @@
+{
+    "validUser": {
+        "email": "jason4@sharklasers.com",
+        "password": "Luc123&#"
+    },
+    "invalidEmail": "jason14@sharklasers.com",
+    "invalidPassword": "Luck#"   
+}

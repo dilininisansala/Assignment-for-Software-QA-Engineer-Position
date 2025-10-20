@@ -1,0 +1,49 @@
+# Cypress test pipeline - runs only on main branch
+
+name: Cypress Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'  # Added caching for faster installs
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          headed: false
+          record: false  # Explicitly set recording
+          parallel: false  # Explicitly set parallelization
+        env:
+          CYPRESS_baseUrl: https://automationexercise.com/
+
+      - name: Upload videos & screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/videos/**/*.mp4
+            cypress/screenshots/**/*.png
+          retention-days: 7  
