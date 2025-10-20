@@ -2,9 +2,9 @@ name: Cypress UI Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: main
   pull_request:
-    branches: [ main ]
+    branches: main
   workflow_dispatch:
 
 jobs:
@@ -15,10 +15,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20'
+          cache: 'npm'  # Added caching for faster installs
 
       - name: Install Dependencies
         run: |
